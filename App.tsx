@@ -31,7 +31,7 @@ interface WisdomItem {
   category: '立命' | '改过' | '积善' | '谦德' | '修身';
 }
 
-// 精选《了凡四训》及格言联璧深度智慧库，确保内容唯一、不重复
+// 精选《了凡四训》及格言联璧深度智慧库
 const WISDOM_DATA: WisdomItem[] = [
   { text: "命由我作，福自己求。", note: "命运掌握在自己手中。通过修身、积德、改过，可以改变先天之命，感召后天之福。", category: "立命" },
   { text: "务要日日知非，日日改过。", note: "修行核心在于觉察。每日反思，若一天不觉过，则一天无进步；若觉而不改，则终生原地踏步。", category: "立命" },
@@ -136,7 +136,6 @@ const App: React.FC = () => {
       timestamp: Date.now(),
     };
     
-    // 随机抽取一条法语
     const randomIdx = Math.floor(Math.random() * WISDOM_DATA.length);
     setCurrentQuote(WISDOM_DATA[randomIdx]);
     
@@ -166,7 +165,7 @@ const App: React.FC = () => {
 
   if (!state.isInitialized) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen px-8 bg-[#fdfcf8] safe-pt safe-pb">
+      <div className="flex flex-col items-center justify-center h-screen px-8 safe-pt safe-pb">
         <div className="w-full text-center space-y-12 animate-fadeIn">
           <div className="space-y-4">
             <h1 className="text-5xl font-light tracking-[0.3em] text-[#2c2c2c]">功过簿</h1>
@@ -200,7 +199,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[#fdfcf8] safe-pt overflow-hidden">
+    <div className="h-screen flex flex-col safe-pt overflow-hidden">
       <header className="px-6 py-4 flex justify-between items-end shrink-0">
         <div>
           <h1 className="text-2xl font-semibold tracking-widest text-[#2c2c2c]">功过簿</h1>
@@ -230,7 +229,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        <div className="flex items-center justify-center py-2 space-x-2 opacity-30"><ChevronDown size={14} className="animate-bounce" /><span className="text-[10px] tracking-widest uppercase">本篇志异</span></div>
+        <div className="flex items-center justify-center py-2 space-x-2 opacity-30"><ChevronDown size={14} className="animate-gentle" /><span className="text-[10px] tracking-widest uppercase">本篇志异</span></div>
 
         <div className="space-y-4">
           {state.entries.length === 0 ? (
@@ -256,7 +255,6 @@ const App: React.FC = () => {
         <button onClick={() => { setModalType('minus'); setIsModalOpen(true); }} className="flex-1 flex items-center justify-center space-x-3 h-16 bg-[#2c2c2c] text-white rounded-2xl active:scale-95 transition-all shadow-lg"><MinusCircle className="text-red-400" size={22} /><span className="text-sm tracking-[0.2em] font-medium">记过</span></button>
       </div>
 
-      {/* 智慧签弹出层 */}
       {isWisdomOpen && currentQuote && (
         <div className="fixed inset-0 z-[150] flex items-center justify-center p-8">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn" onClick={() => setIsWisdomOpen(false)}></div>
@@ -281,7 +279,6 @@ const App: React.FC = () => {
       {isLibraryOpen && <WisdomLibraryOverlay onClose={() => setIsLibraryOpen(false)} />}
       {isArchiveOpen && <ArchiveOverlay state={state} selectedArchiveId={selectedArchiveId} setSelectedArchiveId={setSelectedArchiveId} setIsArchiveOpen={setIsArchiveOpen} selectedArchive={state.archive.find(a => a.id === selectedArchiveId)} />}
       
-      {/* 录入 Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-fadeIn" onClick={() => setIsModalOpen(false)}></div>
@@ -344,22 +341,10 @@ const App: React.FC = () => {
           </div>
         </div>
       )}
-
-      <style>{`
-        @keyframes sheetUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleUp { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        .animate-sheetUp { animation: sheetUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-fadeIn { animation: fadeIn 0.6s ease-out forwards; }
-        .animate-slideUp { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .animate-scaleUp { animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-      `}</style>
     </div>
   );
 };
 
-// --- 法语宝库遮罩组件 ---
 const WisdomLibraryOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const [filter, setFilter] = useState<string>('全部');
   const filteredData = filter === '全部' ? WISDOM_DATA : WISDOM_DATA.filter(i => i.category === filter);
@@ -371,29 +356,16 @@ const WisdomLibraryOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) =>
         <h3 className="text-lg font-medium tracking-[0.3em]">法语宝库</h3>
         <div className="w-10"></div>
       </header>
-
       <div className="flex overflow-x-auto no-scrollbar px-6 py-4 space-x-3 shrink-0">
         {['全部', '立命', '改过', '积善', '谦德', '修身'].map(cat => (
-          <button 
-            key={cat} 
-            onClick={() => setFilter(cat)}
-            className={`px-5 py-2 rounded-full text-[10px] tracking-widest whitespace-nowrap transition-all uppercase font-bold border ${
-              filter === cat ? 'bg-[#b8860b] text-white border-[#b8860b] shadow-md' : 'bg-white text-gray-400 border-gray-100'
-            }`}
-          >
-            {cat}
-          </button>
+          <button key={cat} onClick={() => setFilter(cat)} className={`px-5 py-2 rounded-full text-[10px] tracking-widest whitespace-nowrap transition-all uppercase font-bold border ${filter === cat ? 'bg-[#b8860b] text-white border-[#b8860b] shadow-md' : 'bg-white text-gray-400 border-gray-100'}`}>{cat}</button>
         ))}
       </div>
-
       <main className="flex-1 overflow-y-auto no-scrollbar p-6 space-y-6">
         <div className="space-y-6">
           {filteredData.map((item, idx) => (
             <div key={idx} className="bg-white p-7 rounded-[2rem] border border-[#f0eee4] zen-shadow group animate-slideUp">
-              <div className="flex items-center space-x-2 mb-4">
-                 <Hash size={10} className="text-[#b8860b]" />
-                 <span className="text-[8px] text-gray-300 uppercase tracking-widest font-bold">{item.category}</span>
-              </div>
+              <div className="flex items-center space-x-2 mb-4"><Hash size={10} className="text-[#b8860b]" /><span className="text-[8px] text-gray-300 uppercase tracking-widest font-bold">{item.category}</span></div>
               <p className="text-xl font-serif text-[#2c2c2c] leading-loose mb-6">{item.text}</p>
               <div className="bg-[#fdfcf8] p-5 rounded-2xl border border-dashed border-[#f0eee4]">
                 <p className="text-[10px] text-[#b8860b] uppercase tracking-widest mb-3 font-bold opacity-50">白话解析</p>
@@ -403,7 +375,6 @@ const WisdomLibraryOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) =>
           ))}
         </div>
       </main>
-
       <footer className="p-8 pb-12 shrink-0 bg-white/50 backdrop-blur-sm border-t border-gray-50 text-center">
          <button onClick={onClose} className="w-full py-4 bg-[#2c2c2c] text-white rounded-2xl text-[10px] tracking-[0.4em] font-medium uppercase active:scale-95 transition-all">合上宝库</button>
       </footer>
@@ -411,7 +382,6 @@ const WisdomLibraryOverlay: React.FC<{ onClose: () => void }> = ({ onClose }) =>
   );
 };
 
-// 史册存档视图
 const ArchiveOverlay: React.FC<{
   state: AppState;
   selectedArchiveId: string | null;
@@ -434,14 +404,8 @@ const ArchiveOverlay: React.FC<{
             {state.archive.map((arc) => (
               <div key={arc.id} onClick={() => setSelectedArchiveId(arc.id)} className="bg-white p-6 rounded-[2rem] border border-[#f0eee4] zen-shadow active:scale-[0.98] transition-all space-y-4 relative">
                 <div className="absolute top-0 right-0 w-16 h-16 bg-[#b8860b]/5 rounded-bl-[2rem] flex items-center justify-center pt-2 pl-2"><BookOpen size={16} className="text-[#b8860b]/30" /></div>
-                <div className="space-y-1">
-                  <p className="text-[10px] text-gray-400 uppercase tracking-widest">《账簿名》</p>
-                  <p className="text-xl font-serif text-[#2c2c2c]">{arc.title}</p>
-                </div>
-                <div className="flex items-center space-x-2 text-[10px] text-gray-300 tracking-wider">
-                  <Clock size={10} />
-                  <span>{formatDate(arc.startedAt)} - {formatDate(arc.completedAt)}</span>
-                </div>
+                <div className="space-y-1"><p className="text-[10px] text-gray-400 uppercase tracking-widest">《账簿名》</p><p className="text-xl font-serif text-[#2c2c2c]">{arc.title}</p></div>
+                <div className="flex items-center space-x-2 text-[10px] text-gray-300 tracking-wider"><Clock size={10} /><span>{formatDate(arc.startedAt)} - {formatDate(arc.completedAt)}</span></div>
                 <div className="flex items-center space-x-4 pt-1">
                   <div className="flex items-center space-x-1"><span className="text-[10px] text-gray-300 uppercase">功</span><span className="text-sm font-medium text-[#b8860b]">{arc.entries.filter(e => e.type === 'plus').length}</span></div>
                   <div className="flex items-center space-x-1"><span className="text-[10px] text-gray-300 uppercase">过</span><span className="text-sm font-medium text-[#9e2a2b]">{arc.entries.filter(e => e.type === 'minus').length}</span></div>
@@ -454,9 +418,7 @@ const ArchiveOverlay: React.FC<{
             <div className="bg-[#fcfbf7] p-8 rounded-[2.5rem] border border-[#f0eee4] text-center space-y-6">
               <div className="space-y-2">
                 <h4 className="text-3xl font-serif text-[#b8860b]">《{selectedArchive?.title}》</h4>
-                <p className="text-[10px] text-gray-300 tracking-widest uppercase">
-                  修行周期: {formatDate(selectedArchive?.startedAt || 0)} 至 {formatDate(selectedArchive?.completedAt || 0)}
-                </p>
+                <p className="text-[10px] text-gray-300 tracking-widest uppercase">修行周期: {formatDate(selectedArchive?.startedAt || 0)} 至 {formatDate(selectedArchive?.completedAt || 0)}</p>
               </div>
               <div className="grid grid-cols-2 gap-4 border-t border-gray-50 pt-6">
                 <div><p className="text-[10px] text-gray-400 uppercase mb-1">积功</p><p className="text-xl font-light">{selectedArchive?.entries.filter(e => e.type === 'plus').length}</p></div>
